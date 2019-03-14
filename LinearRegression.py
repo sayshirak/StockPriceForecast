@@ -5,16 +5,19 @@ from sklearn import datasets, linear_model
 from sklearn.model_selection import train_test_split
 
 # 导入数据
-data = pd.read_csv('ZZ500.csv', delimiter=',')
-used_features = ["high", "low", "open", "volume"]
-X = data[used_features]
-y = data["close"]
+#ZZ500.csv存放了上一个交易日之前(包括上一个交易日)的数据
+#ZZ500Tomorrow.csv存放了本交易日之前(包括本交易日)的收盘价
+X = np.loadtxt('ZZ500.csv', delimiter=',')
+y = np.loadtxt('ZZ500Tomorrow.csv', delimiter=',')
+#used_features = ["high", "low", "open", "volume","total_turnover"]
+#X = data[used_features]
+#y = data["close"]
 
-# 从数据集中取15%作为测试集，其他作为训练集
+# 从数据集中取10%作为测试集，其他作为训练集
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
-    test_size=0.15,
+    test_size=0.1,
     random_state=0,
 )
 
@@ -28,16 +31,24 @@ regr.fit(X_train, y_train)
 diabetes_y_pred = regr.predict(X_test)
 
 
-# 以 预测准确率=（预测正确样本数）/（总测试样本数）* 100% 对预测准确率进行计算，设定 ErrorTolerance = 0.1%
+# 以 预测准确率=（预测正确样本数）/（总测试样本数）* 100% 对预测准确率进行计算，设定 ErrorTolerance = 1%
 def accuracy(predict, true):
     sizeofall = len(true)
     sizeofright = 0
     for i in range(0, sizeofall):
         est = abs(predict[i] - true[i]) / true[i]
-        if est < 0.001:
+        if est < 0.01:
             sizeofright = sizeofright + 1
 
     return sizeofright/sizeofall
+
+#输出回归方程
+print('Coefficients: \n', regr.coef_)
+#预测一个
+preTest = [5557.1556,5424.8642,5557.1556,5388.2464,22434923600,201483723055]
+ZZIndex = 0
+for i in range(len(preTest)):
+    ZZIndex = ZZIndex + preTest[i]*regr.coef_[i]
 
 
 # 将预测准确率打印出来
