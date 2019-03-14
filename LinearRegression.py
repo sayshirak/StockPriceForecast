@@ -42,6 +42,18 @@ def accuracy(predict, true):
 
     return sizeofright/sizeofall
 
+#另一种计算预测准确率的方法，当日真实值和预测值和上一个交易日的真实值做减法，如果都为正或都为负则预测成功，否则失败
+def accuracy2(predict, true):
+    sizeofall = len(true)
+    sizeofright = 0
+    for i in range(1, sizeofall):
+        if(((predict[i] - true[i-1]>0) and (true[i] - true[i-1]>0))
+            or ((predict[i] - true[i-1]>0) and (true[i] - true[i-1]<0))):
+            sizeofright = sizeofright + 1
+
+    return sizeofright/sizeofall
+
+
 #输出回归方程
 print('Coefficients: \n', regr.coef_)
 #预测一个
@@ -54,7 +66,7 @@ for i in range(len(preTest)):
 # 将预测准确率打印出来
 predict = np.array(diabetes_y_pred)
 true = np.array(y_test)
-Ac = accuracy(predict, true)
+Ac = accuracy2(predict, true)
 print("Accuracy=", Ac*100, '%')
 
 # 以 R-Squared 对预测准确率进行计算，将其打印出来
