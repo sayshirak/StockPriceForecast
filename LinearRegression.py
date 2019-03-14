@@ -7,8 +7,8 @@ from sklearn.model_selection import train_test_split
 # 导入数据
 #ZZ500.csv存放了上一个交易日之前(包括上一个交易日)的数据
 #ZZ500Tomorrow.csv存放了本交易日之前(包括本交易日)的收盘价
-X = np.loadtxt('ZZ500.csv', delimiter=',')
-y = np.loadtxt('ZZ500Tomorrow.csv', delimiter=',')
+X = pd.read_csv('ZZ500.csv', delimiter=',')
+y = pd.read_csv('ZZ500Tomorrow.csv', delimiter=',')
 #used_features = ["high", "low", "open", "volume","total_turnover"]
 #X = data[used_features]
 #y = data["close"]
