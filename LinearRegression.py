@@ -5,7 +5,7 @@ from sklearn import datasets, linear_model
 from sklearn.model_selection import train_test_split
 
 # 导入数据
-#ZZ500.csv存放了上两个交易日之前(包括上两个交易日)的数据
+#ZZ500.csv存放了上1个交易日之前(包括上1个交易日)的数据
 #ZZ500Tomorrow.csv存放了本交易日之前(包括本交易日)的收盘价
 X = pd.read_csv('ZZ500.csv', delimiter=',').iloc[:,1:]
 X = X.values[:,:]
@@ -86,11 +86,10 @@ print("判断涨跌准确率=", Ac*100, '%')
 # 以 R-Squared 对预测准确率进行计算，将其打印出来
 print("R-Squared Accuracy=", (regr.score(X_test, y_test)) * 100, '%')
 
-'''
+
 # 将测试结果以图标的方式显示出来
 plt.figure()
 plt.plot(range(len(diabetes_y_pred)), diabetes_y_pred, 'go-', label="predict value")
 plt.plot(range(len(diabetes_y_pred)), y_test, 'ro-', label="true value")
 plt.legend()
 plt.show()
-'''
