@@ -17,7 +17,7 @@ y = y.values[:,:]
 
 # 从数据集中取10%作为测试集，其他作为训练集
 height = X.shape[0]
-trainSize = int(0.9*height)
+trainSize = int(0.7*height)
 testSize = height - trainSize
 X_train = X[0:trainSize,:]
 X_test = X[trainSize:height,:]
@@ -85,9 +85,11 @@ print("判断涨跌准确率=", Ac*100, '%')
 # 以 R-Squared 对预测准确率进行计算，将其打印出来
 print("R-Squared Accuracy=", (regr.score(X_test, y_test)) * 100, '%')
 
+'''
 # 将测试结果以图标的方式显示出来
 plt.figure()
 plt.plot(range(len(diabetes_y_pred)), diabetes_y_pred, 'go-', label="predict value")
 plt.plot(range(len(diabetes_y_pred)), y_test, 'ro-', label="true value")
 plt.legend()
 plt.show()
+'''
