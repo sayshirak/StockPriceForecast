@@ -5,7 +5,7 @@ from sklearn import datasets, linear_model
 from sklearn.model_selection import train_test_split
 
 # 导入数据
-#ZZ500.csv存放了上一个交易日之前(包括上一个交易日)的数据
+#ZZ500.csv存放了上两个交易日之前(包括上两个交易日)的数据
 #ZZ500Tomorrow.csv存放了本交易日之前(包括本交易日)的收盘价
 X = pd.read_csv('ZZ500.csv', delimiter=',').iloc[:,1:]
 X = X.values[:,:]
@@ -15,7 +15,7 @@ y = y.values[:,:]
 #X = data[used_features]
 #y = data["close"]
 
-# 从数据集中取10%作为测试集，其他作为训练集
+# 从数据集中取70%作为测试集，其他作为训练集
 height = X.shape[0]
 trainSize = int(0.7*height)
 testSize = height - trainSize
