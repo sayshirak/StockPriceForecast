@@ -7,21 +7,32 @@ from sklearn.model_selection import train_test_split
 # 导入数据
 #ZZ500.csv存放了上一个交易日之前(包括上一个交易日)的数据
 #ZZ500Tomorrow.csv存放了本交易日之前(包括本交易日)的收盘价
-X = pd.read_csv('ZZ500.csv', delimiter=',')
-y = pd.read_csv('ZZ500Tomorrow.csv', delimiter=',')
+X = pd.read_csv('ZZ500.csv', delimiter=',').iloc[:,1:]
+X = X.values[:,:]
+y = pd.read_csv('ZZ500Tomorrow.csv', delimiter=',').iloc[:,1:]
+y = y.values[:,:]
 #used_features = ["high", "low", "open", "volume","total_turnover"]
 #X = data[used_features]
 #y = data["close"]
 
 # 从数据集中取10%作为测试集，其他作为训练集
+height = X.shape[0]
+trainSize = int(0.7*height)
+testSize = height - trainSize
+X_train = X[0:trainSize,:]
+X_test = X[trainSize:height,:]
+y_train = y[0:trainSize,:]
+y_test = y[trainSize:height,:]
+'''
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
     test_size=0.1,
     random_state=0,
 )
-
+'''
 # 创建线性回归模型
+print("线性回归建模")
 regr = linear_model.LinearRegression()
 
 # 用训练集训练模型
@@ -57,24 +68,29 @@ def accuracy2(predict, true):
 #输出回归方程
 print('Coefficients: \n', regr.coef_)
 #预测一个
+'''
 preTest = [5557.1556,5424.8642,5557.1556,5388.2464,22434923600,201483723055]
 ZZIndex = 0
 for i in range(len(preTest)):
     ZZIndex = ZZIndex + preTest[i]*regr.coef_[i]
-
+'''
 
 # 将预测准确率打印出来
 predict = np.array(diabetes_y_pred)
 true = np.array(y_test)
-Ac = accuracy2(predict, true)
-print("Accuracy=", Ac*100, '%')
+Ac = accuracy(predict, true)   #判断指数准确率
+print("判断指数准确率=", Ac*100, '%')
+Ac = accuracy2(predict, true)   #判断涨跌准确率
+print("判断涨跌准确率=", Ac*100, '%')
 
 # 以 R-Squared 对预测准确率进行计算，将其打印出来
 print("R-Squared Accuracy=", (regr.score(X_test, y_test)) * 100, '%')
 
+'''
 # 将测试结果以图标的方式显示出来
 plt.figure()
 plt.plot(range(len(diabetes_y_pred)), diabetes_y_pred, 'go-', label="predict value")
 plt.plot(range(len(diabetes_y_pred)), y_test, 'ro-', label="true value")
 plt.legend()
 plt.show()
+'''
