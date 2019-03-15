@@ -32,6 +32,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 '''
 # 创建线性回归模型
+print("线性回归建模")
 regr = linear_model.LinearRegression()
 
 # 用训练集训练模型
