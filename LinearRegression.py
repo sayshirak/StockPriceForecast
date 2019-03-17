@@ -20,13 +20,11 @@ def createModel():
     X, Y = checkDat(X,Y)
     X = X.values[:,:]
     Y = Y.values[:,:]
-    #used_features = ["high", "low", "open", "volume","total_turnover"]
-    #X = data[used_features]
-    #y = data["close"]
+
 
     # 从数据集中取70%作为测试集，其他作为训练集
     height = X.shape[0]
-    trainSize = int(0.7*height)
+    trainSize = int(0.8*height)
     testSize = height - trainSize
     X_train = X[0:trainSize,:]
     X_test = X[trainSize:height,:]
