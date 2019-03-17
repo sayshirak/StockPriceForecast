@@ -4,33 +4,36 @@ __author__ = 'gy'
 import numpy as np
 import pandas as pd
 from rqalpha.api import *
-
-
 import datetime
 
-index = "000905.XSHG"
-nextDate = datetime.date.today()+datetime.timedelta(days=4)
-forecastTradeDate = get_previous_trading_date(nextDate)
+# 在这个方法中编写任何的初始化逻辑。context对象将会在你的算法策略的任何方法之间做传递。
+def init(context):
+    logger.info("init")
+    context.s1 = "000001.XSHE"
+    update_universe(context.s1)
+    # 是否已发送了order
+    context.fired = False
+    context.cnt = 1
 
-model = [ -1.29844591e-01,1.23706203e+00,-3.76624367e-02,-7.21035534e-02,4.93911638e-09,-2.02546416e-10,-6.31834722e+00,2.16241357e-01]
-lastTradeDate = get_previous_trading_date(forecastTradeDate)
-print("上一个交易日:%s"%(lastTradeDate))
-print("下一个交易日:%s"%(forecastTradeDate))
-data = get_price(index, start_date=lastTradeDate, end_date=lastTradeDate, fields = ['open','close','high','low','volume','total_turnover']).iloc[0:,0:6]
-#print(data)
-dataTotal = []
-for i in range(data.shape[1]):
-    #print(data.iloc[0:,i:i+1])
-    dataTotal.append(data.values[0:,i:i+1])
-getPBPE = index_indicator('中证500', start_date=lastTradeDate, end_date=lastTradeDate).iloc[:,1:3]
-print(getPBPE)
-for i in range(getPBPE.shape[1]):
-    dataTotal.append(getPBPE.values[0:,i:i+1])
-price = 0
-#for i in range(len(model)):
-    #print(model[i])
-    #print(dataTotal[i][0])
-    #price = price + model[i]*dataTotal[i][0]
-#print(data)
-#print(getPBPE)
-#print(price)
+
+def before_trading(context):
+    logger.info("Before Trading", context.cnt)
+    context.cnt += 1
+
+
+# 你选择的证券的数据更新将会触发此段逻辑，例如日或分钟历史数据切片或者是实时数据切片更新
+def handle_bar(context, bar_dict):
+    context.cnt += 1
+    logger.info("handle_bar", context.cnt)
+    # 开始编写你的主要的算法逻辑
+
+    # bar_dict[order_book_id] 可以拿到某个证券的bar信息
+    # context.portfolio 可以拿到现在的投资组合状态信息
+
+    # 使用order_shares(id_or_ins, amount)方法进行落单
+
+    # TODO: 开始编写你的算法吧！
+    if not context.fired:
+        # order_percent并且传入1代表买入该股票并且使其占有投资组合的100%
+        order_percent(context.s1, 1)
+        context.fired = True
