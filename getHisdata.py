@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import datetime
 
+#这是米筐研究平台的备份，不能离线运行
 param = ['open', 'close', 'high', 'low', 'volume', 'total_turnover']
 # get_price('中证500', start_date='2016-02-03', end_date='2016-02-13', frequency='1m', fields=None)
 df = pd.DataFrame(
@@ -28,12 +29,12 @@ for i in range(len(param)):
 # 将沪深300的历史数据加到df后面
 for i in range(len(param)):
     paramAdd = 'HS300' + param[i]
-    df[paramAdd] = dfSZZS.iloc[:, i]
+    df[paramAdd] = dfHS300.iloc[:, i]
 
 # 将深圳成指的历史数据加到df后面
 for i in range(len(param)):
     paramAdd = 'SZCZ' + param[i]
-    df[paramAdd] = dfSZZS.iloc[:, i]
+    df[paramAdd] = dfSZCZ.iloc[:, i]
 
 # print(df)
 
