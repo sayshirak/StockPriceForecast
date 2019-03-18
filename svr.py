@@ -5,11 +5,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import time
-from sklearn import datasets, linear_model
+from sklearn import datasets
+from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
-
-regr = linear_model.LinearRegression()
-
+svr = SVR(kernel = 'rbf',C = 1e3,gamma = 0.1)
 
 def createModel():
     # 导入数据
@@ -30,22 +29,14 @@ def createModel():
     X_test = X[trainSize:height,:]
     Y_train = Y[0:trainSize,:]
     Y_test = Y[trainSize:height,:]
-    '''
-    X_train, X_test, y_train, y_test = train_test_split(
-        X,
-        y,
-        test_size=0.1,
-        random_state=0,
-    )
-    '''
-    # 创建线性回归模型
-    print("线性回归建模")
+
+    # 创建SVR模型
+    print("SVR建模")
     # 用训练集训练模型
-    regr.fit(X_train, Y_train)
+    svr.fit(X_train, Y_train.ravel() )
     # 用训练得出的模型进行预测
-    diabetes_y_pred = regr.predict(X_test)
-    # 输出回归方程
-    print('Coefficients: \n', regr.coef_)
+    diabetes_y_pred = svr.predict(X_test)
+
     verifyModel(diabetes_y_pred,X_test,Y_test)
 
 #校验数据，如果有空的情况，将前一个交易日和后一个交易日做算术平均写入空单元格
@@ -84,9 +75,10 @@ def verifyModel(diabetes_y_pred,X_test, Y_test):
     print("判断涨跌准确率=", Ac * 100, '%')
 
     # 以 R-Squared 对预测准确率进行计算，将其打印出来
-    print("R-Squared Accuracy=", (regr.score(X_test, Y_test)) * 100, '%')
+    print("R-Squared Accuracy=", (svr.score(X_test, Y_test)) * 100, '%')
 
     # 将测试结果以图标的方式显示出来
+
     plt.figure()
     plt.plot(range(len(diabetes_y_pred)), diabetes_y_pred, 'go-', label="predict value")
     plt.plot(range(len(diabetes_y_pred)), Y_test, 'ro-', label="true value")
@@ -110,7 +102,7 @@ def accuracy2(predict, true):
     sizeofright = 0
     for i in range(1, sizeofall):
         if(((predict[i] - true[i-1]>0) and (true[i] - true[i-1]>0))
-            or ((predict[i] - true[i-1]<0) and (true[i] - true[i-1]<0))):
+            or ((predict[i] - true[i-1]>0) and (true[i] - true[i-1]<0))):
             sizeofright = sizeofright + 1
 
     return sizeofright/sizeofall
