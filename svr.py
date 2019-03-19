@@ -1,6 +1,9 @@
 #-*- coding: UTF-8 -*-
 __author__ = 'gy'
-
+'''
+直观上来讲 SVM 分类（SVC Support Vector Classification）与 SVR（Support Vector Regression）的区别如下：
+分类是找一个平面，使得边界上的点到平面的距离最远，回归是让每个点到回归线的距离最小。
+'''
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,8 +11,7 @@ import time
 from sklearn import datasets
 from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
-
-svr = SVR(kernel='rbf', C=1e3, gamma=0.1)
+svr = SVR(kernel = 'linear',C = 1e3,gamma = 0.1)
 #svr = SVR(C=1.0, cache_size=200, coef0=0.0, degree=3, epsilon=0.2, gamma=0.1,kernel='rbf', max_iter=-1, shrinking=True, tol=0.001, verbose=False)
 
 def createModel():
@@ -32,14 +34,44 @@ def createModel():
     Y_train = Y[0:trainSize,:]
     Y_test = Y[trainSize:height,:]
 
+    # 从数据集中取80%作为测试集，其他作为训练集
+    height = X.shape[0]
+    trainSize = int(0.8*height)
+    testSize = height - trainSize
+    X_train = X[0:trainSize,:]
+    X_test = X[trainSize:height,:]
+    Y_train = Y[0:trainSize,:]
+    Y_test = Y[trainSize:height,:]
     # 创建SVR模型
     print("SVR建模")
     # 用训练集训练模型
-    svr.fit(X_train, Y_train.ravel() )
+    svr.fit(X_train, Y_train.ravel())
     # 用训练得出的模型进行预测
     diabetes_y_pred = svr.predict(X_test)
 
     verifyModel(diabetes_y_pred,X_test,Y_test)
+'''
+    X = pd.DataFrame(np.arange(2000).reshape((2000,1)))
+    Y = []
+    for i in range(2000):
+        Y.append(i)
+    Y= pd.DataFrame(Y)
+    height = len(X)
+    trainSize = int(0.8*height)
+    testSize = height - trainSize
+    X_train = X[0:trainSize]
+    X_test = X[trainSize:height]
+    Y_train = Y[0:trainSize]
+    Y_test = Y[trainSize:height]
+
+    # 创建SVR模型
+    print("SVR建模")
+    # 用训练集训练模型
+    svr.fit(X_train, Y_train)
+    # 用训练得出的模型进行预测
+    diabetes_y_pred = svr.predict(X_test)
+    verifyModel(diabetes_y_pred,X_test,Y_test)
+    '''
 
 #校验数据，如果有空的情况，将前一个交易日和后一个交易日做算术平均写入空单元格
 def checkDat(X,Y):
