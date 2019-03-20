@@ -7,11 +7,12 @@ __author__ = 'gy'
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import crossval as cr
 import time
 from sklearn import datasets
 from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
-svr = SVR(kernel = 'rbf',C = 1e3,gamma = 0.1)
+svr = SVR(kernel = 'rbf',C = 1e3,gamma = 0.01)
 #svr = SVR(C=1.0, cache_size=200, coef0=0.0, degree=3, epsilon=0.2, gamma=0.1,kernel='rbf', max_iter=-1, shrinking=True, tol=0.001, verbose=False)
 
 def createModel():
@@ -102,7 +103,7 @@ def checkDat(X,Y):
     return X,Y
 
 # 校验模型精度
-def verifyModel(diabetes_y_pred,X_test, Y_test):
+def verifyModel(y_pred,X_test, Y_test):
     '''
     preTest = [5557.1556,5424.8642,5557.1556,5388.2464,22434923600,201483723055]
     ZZIndex = 0
@@ -110,7 +111,7 @@ def verifyModel(diabetes_y_pred,X_test, Y_test):
         ZZIndex = ZZIndex + preTest[i]*regr.coef_[i]
     '''
     # 将预测准确率打印出来
-    predict = np.array(diabetes_y_pred)
+    predict = np.array(y_pred)
     true = np.array(Y_test)
     Ac = accuracy(predict, true)  # 判断指数准确率
     print("判断指数准确率=", Ac * 100, '%')
@@ -120,11 +121,13 @@ def verifyModel(diabetes_y_pred,X_test, Y_test):
     # 以 R-Squared 对预测准确率进行计算，将其打印出来
     print("R-Squared Accuracy=", (svr.score(X_test, Y_test)) * 100, '%')
 
+    #计算皮尔逊相关系数，需要分别计算决策风格的5个维度的相关
+    pearson = cr.calcPearson(Y_test, y_pred)
+    print('Pearson correlation coefficient: %2f' % pearson)
     # 将测试结果以图标的方式显示出来
-
     plt.figure()
-    plt.plot(range(len(diabetes_y_pred)), diabetes_y_pred, 'go-', label="predict value")
-    plt.plot(range(len(diabetes_y_pred)), Y_test, 'ro-', label="true value")
+    plt.plot(range(len(y_pred)), y_pred, 'go-', label="predict value")
+    plt.plot(range(len(y_pred)), Y_test, 'ro-', label="true value")
     plt.legend()
     plt.show()
 
@@ -151,7 +154,7 @@ def accuracy2(predict, true):
     return sizeofright/sizeofall
 
 def example():
-    n_samples, n_features = 10, 5
+    n_samples, n_features = 3000, 25
     np.random.seed(0)
     Y = np.random.randn(n_samples)
     X = np.random.randn(n_samples, n_features)
