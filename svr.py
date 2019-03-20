@@ -12,11 +12,11 @@ import time
 from sklearn import datasets
 from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
-svr = SVR(kernel = 'rbf',C = 1e3,gamma = 0.03)
+svr = SVR(kernel = 'linear',C = 1e3,gamma = 0.01)
 #svr = SVR(C=1.0, cache_size=200, coef0=0.0, degree=3, epsilon=0.2, gamma=0.1,kernel='rbf', max_iter=-1, shrinking=True, tol=0.001, verbose=False)
 
 def createModel():
-    '''
+
     # 导入数据
     #ZZ500.csv存放了上1个交易日之前(包括上1个交易日)的数据
     #ZZ500Tomorrow.csv存放了本交易日之前(包括本交易日)的收盘价
@@ -29,57 +29,29 @@ def createModel():
 
     # 从数据集中取80%作为测试集，其他作为训练集
     # 从数据集中取80%作为测试集，其他作为训练集
-    # height = X.shape[0]
-    heightArray = [(i+10) for i in range(0,2900,10)]
-    heightArray.append(X.shape[0])
-
+    height = int(X.shape[0]*0.1)
     # 创建SVR模型
     print("SVR建模")
-    for height in heightArray:
-        trainSize = int(0.8*height)
-        testSize = height - trainSize
-        X_train = X[0:trainSize,:]
-        X_test = X[trainSize:height,:]
-        Y_train = Y[0:trainSize,:]
-        Y_test = Y[trainSize:height,:]
-        trainSize = int(0.8*height)
-        testSize = height - trainSize
-        X_train = X[0:trainSize,:]
-        X_test = X[trainSize:height,:]
-        Y_train = Y[0:trainSize,:]
-        Y_test = Y[trainSize:height,:]
+    trainSize = int(0.9*height)
+    testSize = int(height - trainSize)
+    X_train = X[0:trainSize,:]
+    X_test = X[trainSize:height,:]
+    Y_train = Y[0:trainSize,:]
+    Y_test = Y[trainSize:height,:]
 
-        # 用训练集训练模型
-        print("%d start-------"%(height))
-        startTime = time.time()
-        svr.fit(X_train, Y_train.ravel())
-        endTime = time.time()
-        durationTime = endTime - startTime
-        print("%d end" % (height))
-        print("duration: %s"%(durationTime))
-    pass
-    # 用训练得出的模型进行预测
-    diabetes_y_pred = svr.predict(X_test)
 
-    verifyModel(diabetes_y_pred,X_test,Y_test)
-'''
-    X = pd.DataFrame(np.arange(400).reshape((400,1)))
-    Y = [i+1000 for i in range(400)]
-    Y= pd.DataFrame(Y)
-    height = len(X)
-    trainSize = int(0.8*height)
-    testSize = height - trainSize
-    X_train = X[0:trainSize]
-    X_test = X[trainSize:height]
-    Y_train = Y[0:trainSize]
-    Y_test = Y[trainSize:height]
-
-    # 创建SVR模型
-    print("SVR建模")
     # 用训练集训练模型
-    svr.fit(X_train, Y_train)
+    #print("%d start-------"%(height))
+    #startTime = time.time()
+    svr.fit(X_train, Y_train.ravel())
+    #endTime = time.time()
+    #durationTime = endTime - startTime
+    #print("%d end" % (height))
+    #print("duration: %s"%(durationTime))
+
     # 用训练得出的模型进行预测
     diabetes_y_pred = svr.predict(X_test)
+
     verifyModel(diabetes_y_pred,X_test,Y_test)
 
 
@@ -154,7 +126,7 @@ def accuracy2(predict, true):
     return sizeofright/sizeofall
 
 def example():
-    n_samples, n_features = 88, 30
+    n_samples, n_features = 3000, 24
     np.random.seed(0)
     Y = np.random.randn(n_samples)
     X = np.random.randn(n_samples, n_features)
@@ -173,6 +145,6 @@ def example():
 
 if __name__ == '__main__':
     time1 = time.time()
-    #createModel()
-    example()
+    createModel()
+    #example()
     time2 = time.time()
